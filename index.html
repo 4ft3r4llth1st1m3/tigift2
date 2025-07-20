@@ -18,21 +18,19 @@
         height: 200px;
         position: relative;
         transform-style: preserve-3d;
-        transition: all 0.8s ease;
+        transition: transform 0.8s ease;
         cursor: pointer;
         margin-bottom: 50px;
         z-index: 1;
     }
     .letter.active {
-        transform: rotateY(180deg);
         height: auto;
-        min-height: 200px;
         margin-bottom: 150px;
+        transform: rotateY(180deg);
     }
     .folded, .unfolded {
         position: absolute;
         width: 100%;
-        height: 100%;
         backface-visibility: hidden;
         border-radius: 10px;
     }
@@ -49,12 +47,11 @@
     }
     .unfolded {
         background: white;
-        transform: rotateY(180deg);
         padding: 30px;
         box-shadow: 0 0 20px rgba(0,0,0,0.1);
         height: auto;
-        min-height: 100%;
         overflow: visible;
+        transform: rotateY(180deg);
     }
     .letter-content {
         overflow: visible;
@@ -72,6 +69,9 @@
         color: white;
         box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
+    .hidden {
+        display: none;
+    }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
@@ -84,7 +84,7 @@
         <div class="heart-container">
             ❤️
         </div>
-
+        
         <div class="valentine-letters">
             <div class="letter" onclick="unfoldLetter(1)">
                 <div class="folded">
@@ -95,9 +95,9 @@
                 </div>
                 <div class="unfolded">
                     <div class="letter-content">
-                        <h3>CARTA I</h3>
+                        <h3>Un mapa que solo vos leés.</h3>
                         <div class="letter-text">
-                            <h1 class="special-title">Un mapa que solo vos leés.</h1>
+                            <h1 class="special-title"></h1>
                             <p>Hoy, antes de que el calendario marque tu día, me encuentro acá, pensando.</p>
                             <p>En estos meses. Qué locura, ¿no? Cómo de pronto, ciertas personas aparecen y desarman todo el plan. Y es bueno. Es muy bueno. Porque con vos, siento que cada pieza, incluso las que parecían sueltas, empieza a encontrar su lugar.</p>
                             <p>Te veo y el orgullo me pisa los talones. Esa fuerza tuya, para ir por lo que querés, para armar tu mundo con tanta convicción. Es algo que admiro, que se me cuela en los días, sin pedir permiso, recordándome que los sueños no esperan, que se construyen. Ver tu crecimiento en todo lo que tocás, cómo te entregás a cada idea, a cada proyecto, es una lección silenciosa que me deja sin palabras.</p>
@@ -105,6 +105,7 @@
                             <p>Deseo que lo que viene te encuentre liviano, con más risas de esas que desarman, que te hacen doler el estómago. Que cada sueño tome forma, paso a paso, con la paciencia y la pasión que te caracterizan. Que la vida te dé lo que buscás y un poco más, porque merecés todo lo bueno que hay en el camino. Que sigas progresando, brillando con esa luz tan particular que tenés.</p>
                             <p>Y que en todo eso que sos, y que vas a ser, en cada victoria pequeña o grande, en cada nuevo comienzo, sepas que hay una conexión. Una que no necesita explicarse con palabras grandilocuentes. Una que existe, acá, en los silencios que solo nosotros sabemos leer, en las miradas que duran un segundo más, en las bromas que solo vos entendés. Que esa conexión sea un recordatorio de que siempre quiero verte feliz, construyendo tu propia historia, esa que te hace único.</p>
                             <p class="final-message">Feliz cumpleaños adelantado. <span class="heart-pulse">❤️</span></p>
+
                             <!-- Add your full letter content here -->
                         </div>
                         <div class="signature">
@@ -147,25 +148,27 @@ let currentlyOpen = null;
 function unfoldLetter(letterNum) {
     const letters = document.querySelectorAll('.letter');
     
-    if (currentlyOpen === letterNum) {
-        letters[letterNum-1].classList.remove('active');
-        currentlyOpen = null;
-        return;
-    }
-    
     letters.forEach((letter, index) => {
-        if (index+1 === letterNum) {
+        if (currentlyOpen === letterNum) {
+            // Clicking open letter - close both
+            letter.classList.remove('active');
+            letters[1 - index].classList.remove('hidden');
+        } else if (index + 1 === letterNum) {
+            // Open clicked letter
             letter.classList.add('active');
+            letters[1 - index].classList.add('hidden');
         } else {
+            // Not the clicked letter
             letter.classList.remove('active');
         }
     });
-    
-    currentlyOpen = letterNum;
+
+    currentlyOpen = (currentlyOpen === letterNum) ? null : letterNum;
+
     // Smooth scroll to letter
     setTimeout(() => {
         window.scrollTo({
-            top: letters[letterNum-1].offsetTop - 100,
+            top: letters[letterNum - 1].offsetTop - 100,
             behavior: 'smooth'
         });
     }, 300);
