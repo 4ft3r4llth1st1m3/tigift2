@@ -5,6 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Un Regalo Especial</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+    .valentine-letters {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin: 50px auto;
+        perspective: 1000px;
+    }
+    .letter {
+        width: 300px;
+        height: 200px;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.8s;
+        cursor: pointer;
+    }
+    .letter.active {
+        transform: rotateY(180deg);
+        height: auto;
+    }
+    .folded, .unfolded {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 10px;
+    }
+    .letter-front {
+        background: #ff9eb5;
+        padding: 20px;
+        text-align: center;
+        border-radius: 10px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border: 1px solid #ff6b81;
+    }
+    .unfolded {
+        background: white;
+        transform: rotateY(180deg);
+        padding: 20px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    .seal {
+        width: 30px;
+        height: 30px;
+        background: #ff6b81;
+        border-radius: 50%;
+        margin: 10px auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
     <meta name="theme-color" content="#FF3E4D">
 </head>
@@ -24,20 +82,42 @@
         <p>Y que en todo eso que sos, y que vas a ser, en cada victoria pequeña o grande, en cada nuevo comienzo, sepas que hay una conexión. Una que no necesita explicarse con palabras grandilocuentes. Una que existe, acá, en los silencios que solo nosotros sabemos leer, en las miradas que duran un segundo más, en las bromas que solo vos entendés. Que esa conexión sea un recordatorio de que siempre quiero verte feliz, construyendo tu propia historia, esa que te hace único.</p>
         <p class="final-message">Feliz cumpleaños adelantado. <span class="heart-pulse">❤️</span></p>
 
-        <div class="valentine-cards">
-            <div class="card-container" onclick="openCard(1)">
-                <div class="card">
-                    <div class="front" style="background-image: url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/037a1619-da2c-4c40-b204-ebe0d0493950.png')"></div>
-                    <div class="back">
-                        <p>Contenido especial de la Carta I</p>
+        <div class="valentine-letters">
+            <div class="letter" onclick="unfoldLetter(1)">
+                <div class="folded">
+                    <div class="letter-front">
+                        <h3>CARTA I</h3>
+                        <div class="seal">💌</div>
+                    </div>
+                </div>
+                <div class="unfolded">
+                    <div class="letter-content">
+                        <h3>CARTA I</h3>
+                        <div class="letter-text">
+                            <p>Contenido completo de la Carta I...</p>
+                        </div>
+                        <div class="signature">
+                            <p class="heart-pulse">💝</p>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="card-container" onclick="openCard(2)">
-                <div class="card">
-                    <div class="front" style="background-image: url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/9eef9f6a-e4a1-4ec0-8403-a6ca93703d2f.png')"></div>
-                    <div class="back">
-                        <p>Contenido especial de la Carta II</p>
+            <div class="letter" onclick="unfoldLetter(2)">
+                <div class="folded">
+                    <div class="letter-front">
+                        <h3>CARTA II</h3>
+                        <div class="seal">💌</div>
+                    </div>
+                </div>
+                <div class="unfolded">
+                    <div class="letter-content">
+                        <h3>CARTA II</h3>
+                        <div class="letter-text">
+                            <p>Contenido completo de la Carta II...</p>
+                        </div>
+                        <div class="signature">
+                            <p class="heart-pulse">💝</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -51,15 +131,26 @@
 </div>
 
 <script>
-function openCard(cardNum) {
-    const cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
-        if (card.parentElement.getAttribute('onclick').includes(cardNum)) {
-            card.classList.toggle('flipped');
+let currentlyOpen = null;
+
+function unfoldLetter(letterNum) {
+    const letters = document.querySelectorAll('.letter');
+    
+    if (currentlyOpen === letterNum) {
+        letters[letterNum-1].classList.remove('active');
+        currentlyOpen = null;
+        return;
+    }
+    
+    letters.forEach((letter, index) => {
+        if (index+1 === letterNum) {
+            letter.classList.add('active');
         } else {
-            card.classList.remove('flipped');
+            letter.classList.remove('active');
         }
     });
+    
+    currentlyOpen = letterNum;
 }
 </script>
 </body>
