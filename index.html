@@ -3,176 +3,372 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Un Regalo Especial</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>M&T</title>
     <style>
-    .valentine-letters {
-        display: flex;
-        justify-content: center;
-        gap: 40px;
-        margin: 50px auto;
-        perspective: 1000px;
-    }
-    .letter {
-        width: 300px;
-        height: 200px;
-        position: relative;
-        transform-style: preserve-3d;
-        transition: transform 0.8s ease;
-        cursor: pointer;
-        margin-bottom: 50px;
-        z-index: 1;
-    }
-    .letter.active {
-        height: auto;
-        margin-bottom: 150px;
-        transform: rotateY(180deg);
-    }
-    .folded, .unfolded {
-        position: absolute;
-        width: 100%;
-        backface-visibility: hidden;
-        border-radius: 10px;
-    }
-    .letter-front {
-        background: #ff9eb5;
-        padding: 20px;
-        text-align: center;
-        border-radius: 10px;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        border: 1px solid #ff6b81;
-    }
-    .unfolded {
-        background: white;
-        padding: 30px;
-        box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        height: auto;
-        overflow: visible;
-        transform: rotateY(180deg);
-    }
-    .letter-content {
-        overflow: visible;
-        height: auto;
-    }
-    .seal {
-        width: 30px;
-        height: 30px;
-        background: #ff6b81;
-        border-radius: 50%;
-        margin: 10px auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-    .hidden {
-        display: none;
-    }
+        :root {
+            --primary-color: #f8f9fa;
+            --secondary-color: #e9ecef;
+            --text-color: #212529;
+            --card-color: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode {
+            --primary-color: #1a1a2e;
+            --secondary-color: #16213e;
+            --text-color: #f8f9fa;
+            --card-color: #0f3460;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            transition: background-color 0.5s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--secondary-color);
+            padding: 1rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 2rem auto;
+            flex-grow: 1;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background-color: var(--card-color);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            width: 300px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-front {
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            backface-visibility: hidden;
+        }
+
+        .card-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 1.5rem;
+            background-color: var(--card-color);
+            transform: rotateY(180deg);
+            backface-visibility: hidden;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .card.open .card-front {
+            transform: rotateY(180deg);
+        }
+
+        .card.open .card-back {
+            display: block;
+            transform: rotateY(0deg);
+        }
+
+        .card.open {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotateY(0deg);
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            z-index: 100;
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: var(--text-color);
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        .content-below {
+            background-color: var(--secondary-color);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-top: 2rem;
+        }
+
+        .toggle-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1rem;
+        }
+
+        .toggle-btn {
+            padding: 0.5rem 1rem;
+            background-color: var(--secondary-color);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .player {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: var(--card-color);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 99;
+            display: none;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .cards-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .card.open {
+                width: 90%;
+            }
+        }
+
+        /* Animations */
+        @keyframes flipIn {
+            from {
+                transform: translate(-50%, -50%) rotateY(90deg);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%) rotateY(0deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes flipOut {
+            from {
+                transform: translate(-50%, -50%) rotateY(0deg);
+                opacity: 1;
+            }
+            to {
+                transform: translate(-50%, -50%) rotateY(90deg);
+                opacity: 0;
+            }
+        }
+
+        .card.open {
+            animation: flipIn 0.5s forwards;
+        }
+
+        .card.closing {
+            animation: flipOut 0.5s forwards;
+        }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
-    <meta name="theme-color" content="#FF3E4D">
 </head>
 <body>
-    <div class="stars"></div>
-    <div class="twinkling"></div>
+    <header>
+        <h1>Algo especial para mi persona especial. ❤️</h1>
+    </header>
+
     <div class="container">
-        <div class="heart-container">
-            ❤️
+        <div class="toggle-container">
+            <button class="toggle-btn" id="darkModeToggle">
+                <span class="toggle-icon">🌙</span>
+                <span>¿Modo noche?</span>
+            </button>
         </div>
-        
-        <div class="valentine-letters">
-            <div class="letter" onclick="unfoldLetter(1)">
-                <div class="folded">
-                    <div class="letter-front">
-                        <h3>CARTA I</h3>
-                        <div class="seal">💌</div>
-                    </div>
-                </div>
-                <div class="unfolded">
-                    <div class="letter-content">
-                        <h3>Un mapa que solo vos leés.</h3>
-                        <div class="letter-text">
-                            <h1 class="special-title"></h1>
-                            <p>Hoy, antes de que el calendario marque tu día, me encuentro acá, pensando.</p>
-                            <p>En estos meses. Qué locura, ¿no? Cómo de pronto, ciertas personas aparecen y desarman todo el plan. Y es bueno. Es muy bueno. Porque con vos, siento que cada pieza, incluso las que parecían sueltas, empieza a encontrar su lugar.</p>
-                            <p>Te veo y el orgullo me pisa los talones. Esa fuerza tuya, para ir por lo que querés, para armar tu mundo con tanta convicción. Es algo que admiro, que se me cuela en los días, sin pedir permiso, recordándome que los sueños no esperan, que se construyen. Ver tu crecimiento en todo lo que tocás, cómo te entregás a cada idea, a cada proyecto, es una lección silenciosa que me deja sin palabras.</p>
-                            <p>Y sí, quizás ando por ahí con mi propia melodía, mi propio caos interno que a veces los de afuera no entienden, o dicen que "estoy loquita". Pero vos... vos tenés un ritmo que también desafía lo obvio, una forma única de ser que no se amolda a los moldes. Y en esa frecuencia, en ese "algo" que no se nombra pero se siente cada vez que estamos cerca, es donde nos encontramos. Donde todo encaja, donde las charlas fluyen sin esfuerzo y el tiempo parece un invento.</p>
-                            <p>Deseo que lo que viene te encuentre liviano, con más risas de esas que desarman, que te hacen doler el estómago. Que cada sueño tome forma, paso a paso, con la paciencia y la pasión que te caracterizan. Que la vida te dé lo que buscás y un poco más, porque merecés todo lo bueno que hay en el camino. Que sigas progresando, brillando con esa luz tan particular que tenés.</p>
-                            <p>Y que en todo eso que sos, y que vas a ser, en cada victoria pequeña o grande, en cada nuevo comienzo, sepas que hay una conexión. Una que no necesita explicarse con palabras grandilocuentes. Una que existe, acá, en los silencios que solo nosotros sabemos leer, en las miradas que duran un segundo más, en las bromas que solo vos entendés. Que esa conexión sea un recordatorio de que siempre quiero verte feliz, construyendo tu propia historia, esa que te hace único.</p>
-                            <p class="final-message">Feliz cumpleaños adelantado. <span class="heart-pulse">❤️</span></p>
 
-                            <!-- Add your full letter content here -->
-                        </div>
-                        <div class="signature">
-                            <p class="heart-pulse">💝</p>
-                        </div>
-                    </div>
+        <div class="overlay" id="overlay"></div>
+
+        <div class="cards-container">
+            <div class="card" id="card1">
+                <div class="card-front">
+                    <img src="https://placehold.co/600x400/4a6fa5/ffffff" alt="Carta abierta con diseño clásico sobre mesa de madera">
+                    <h2>Parte I</h2>
+                    <p>Un mapa que solo vos leés.</p>
+                </div>
+                <div class="card-back">
+                    <button class="close-btn" aria-label="Cerrar">✕</button>
+                    <h2 class="special-title">Un mapa que solo vos leés.</h2>
+                    <p>Hoy, antes de que el calendario marque tu día, me encuentro acá, pensando.</p>
+                    <p>En estos meses. Qué locura, ¿no? Cómo de pronto, ciertas personas aparecen y desarman todo el plan. Y es bueno. Es muy bueno. Porque con vos, siento que cada pieza, incluso las que parecían sueltas, empieza a encontrar su lugar.</p>
+                    <p>Te veo y el orgullo me pisa los talones. Esa fuerza tuya, para ir por lo que querés, para armar tu mundo con tanta convicción. Es algo que admiro, que se me cuela en los días, sin pedir permiso, recordándome que los sueños no esperan, que se construyen. Ver tu crecimiento en todo lo que tocás, cómo te entregás a cada idea, a cada proyecto, es una lección silenciosa que me deja sin palabras.</p>
+                    <p>Y sí, quizás ando por ahí con mi propia melodía, mi propio caos interno que a veces los de afuera no entienden, o dicen que "estoy loquita". Pero vos... vos tenés un ritmo que también desafía lo obvio, una forma única de ser que no se amolda a los moldes. Y en esa frecuencia, en ese "algo" que no se nombra pero se siente cada vez que estamos cerca, es donde nos encontramos. Donde todo encaja, donde las charlas fluyen sin esfuerzo y el tiempo parece un invento.</p>
+                    <p>Deseo que lo que viene te encuentre liviano, con más risas de esas que desarman, que te hacen doler el estómago. Que cada sueño tome forma, paso a paso, con la paciencia y la pasión que te caracterizan. Que la vida te dé lo que buscás y un poco más, porque merecés todo lo bueno que hay en el camino. Que sigas progresando, brillando con esa luz tan particular que tenés.</p>
+                    <p>Y que en todo eso que sos, y que vas a ser, en cada victoria pequeña o grande, en cada nuevo comienzo, sepas que hay una conexión. Una que no necesita explicarse con palabras grandilocuentes. Una que existe, acá, en los silencios que solo nosotros sabemos leer, en las miradas que duran un segundo más, en las bromas que solo vos entendés. Que esa conexión sea un recordatorio de que siempre quiero verte feliz, construyendo tu propia historia, esa que te hace único.</p>
+                    <p class="final-message">Feliz cumpleaños adelantado. <span class="heart-pulse">❤️</span></p>
                 </div>
             </div>
-            <div class="letter" onclick="unfoldLetter(2)">
-                <div class="folded">
-                    <div class="letter-front">
-                        <h3>CARTA II</h3>
-                        <div class="seal">💌</div>
-                    </div>
+
+            <div class="card" id="card2">
+                <div class="card-front">
+                    <img src="https://placehold.co/600x400/e8b4bc/ffffff" alt="Sobre cerrado con sello de cera roja sobre papel pergamino">
+                    <h2>Carta 2</h2>
+                    <p>Haz clic para leer esta carta</p>
                 </div>
-                <div class="unfolded">
-                    <div class="letter-content">
-                        <h3>CARTA II</h3>
-                        <div class="letter-text">
-                            <p>Contenido completo de la Carta II...</p>
-                        </div>
-                        <div class="signature">
-                            <p class="heart-pulse">💝</p>
-                        </div>
-                    </div>
+                <div class="card-back">
+                    <button class="close-btn" aria-label="Cerrar carta">✕</button>
+                    <h2>Contenido de la Carta 2</h2>
+                    <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
                 </div>
             </div>
         </div>
 
-        <div class="spotify-wrapper">
-            <h2>Para continuar con el regalo, da play a esta canción y deja que suceda el resto...</h2>
-            <iframe class="spotify-button" src="https://open.spotify.com/embed/track/4waqcUQWdj0yH26STWl2Rq?utm_source=generator&theme=0&show_info=0&controls=1" width="300" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        <div class="content-below">
+            <div class="player">
+                <h3>Reproductor de Música</h3>
+                <p>Este contenido debe aparecer debajo de las cartas incluso cuando una carta está abierta.</p>
+                <audio controls style="width: 100%">
+                    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+                    Tu navegador no soporta el elemento de audio.
+                </audio>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-let currentlyOpen = null;
-
-function unfoldLetter(letterNum) {
-    const letters = document.querySelectorAll('.letter');
-    
-    letters.forEach((letter, index) => {
-        if (currentlyOpen === letterNum) {
-            // Clicking open letter - close both
-            letter.classList.remove('active');
-            letters[1 - index].classList.remove('hidden');
-        } else if (index + 1 === letterNum) {
-            // Open clicked letter
-            letter.classList.add('active');
-            letters[1 - index].classList.add('hidden');
-        } else {
-            // Not the clicked letter
-            letter.classList.remove('active');
-        }
-    });
-
-    currentlyOpen = (currentlyOpen === letterNum) ? null : letterNum;
-
-    // Smooth scroll to letter
-    setTimeout(() => {
-        window.scrollTo({
-            top: letters[letterNum - 1].offsetTop - 100,
-            behavior: 'smooth'
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            const overlay = document.getElementById('overlay');
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            
+            cards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Don't open if click is on the close button
+                    if (e.target.classList.contains('close-btn')) return;
+                    
+                    // Close all other cards first
+                    cards.forEach(c => {
+                        if (c !== card && c.classList.contains('open')) {
+                            closeCard(c);
+                        }
+                    });
+                    
+                    openCard(card);
+                });
+            });
+            
+            // Close card when clicking close button
+            document.querySelectorAll('.close-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const card = this.closest('.card');
+                    closeCard(card);
+                });
+            });
+            
+            function openCard(card) {
+                overlay.classList.add('active');
+                card.classList.add('open');
+                
+                // Disable scrolling on body
+                document.body.style.overflow = 'hidden';
+            }
+            
+            function closeCard(card) {
+                card.classList.add('closing');
+                
+                setTimeout(() => {
+                    card.classList.remove('open', 'closing');
+                    overlay.classList.remove('active');
+                    
+                    // Re-enable scrolling if all cards are closed
+                    if (document.querySelectorAll('.card.open').length === 0) {
+                        document.body.style.overflow = '';
+                    }
+                }, 500); // Match animation duration
+            }
+            
+            // Close card when clicking outside
+            overlay.addEventListener('click', function() {
+                document.querySelectorAll('.card.open').forEach(card => {
+                    closeCard(card);
+                });
+            });
+            
+            // Dark mode toggle
+            darkModeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                
+                if (document.body.classList.contains('dark-mode')) {
+                    this.querySelector('span').textContent = '☀️';
+                    this.querySelector('span:last-child').textContent = 'Modo Diurno';
+                } else {
+                    this.querySelector('span').textContent = '🌙';
+                    this.querySelector('span:last-child').textContent = 'Modo Nocturno';
+                }
+            });
         });
-    }, 300);
-}
-</script>
+    </script>
 </body>
 </html>
