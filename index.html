@@ -236,17 +236,31 @@
     </style>
 </head>
 <body>
+    <div id="passwordModal" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#ffb6c1;display:flex;justify-content:center;align-items:center;z-index:9999;">
+        <div style="background:white;padding:2rem;border-radius:10px;text-align:center;">
+            <h2>Digite la clave aquí.</h2>
+            <input type="password" id="passwordInput" placeholder="Introduce la clave">
+            <button onclick="checkPassword()">Ingresar</button>
+        </div>
+    </div>
+    
+    <div id="wrongPassword" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#ffb6c1;color:white;display:none;justify-content:center;align-items:center;z-index:9999;font-size:2rem;font-weight:bold;">
+        No se admiten chismosos.
+    </div>
+
     <header>
         <h1>Algo especial para mi persona especial. ❤️</h1>
     </header>
 
-    <div class="container">
+    <div class="protected-container" id="protectedContent" style="display: none;">
+        <div class="container">
         <div class="toggle-container">
             <button class="toggle-btn" id="darkModeToggle">
                 <span class="toggle-icon">🌙</span>
-                <span>¿Modo noche?</span>
+                <span>Modo Noche</span>
             </button>
         </div>
+    </div>
 
         <div class="overlay" id="overlay"></div>
 
@@ -303,7 +317,53 @@ Seguí siendo ese pibe con esa energía única, con esa transparencia que te hac
     </div>
 
     <script>
+        // Disable screenshots
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'PrintScreen' || (e.ctrlKey && e.key === 'p')) {
+                e.preventDefault();
+                alert('Capturas no permitidas');
+            }
+        });
+
+        // Prevent context menu (right click)
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        // Disable dev tools
+        document.onkeydown = function(e) {
+            if (e.keyCode == 123) return false; // F12
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 73) return false; // Ctrl + Shift + I
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 74) return false; // Ctrl + Shift + J
+            if (e.ctrlKey && e.keyCode == 85) return false; // Ctrl + U
+        };
+
+        // Password handling
+        const correctPassword = 'you&i'; // Keep this hidden in production
+        const encodedPass = btoa(encodeURIComponent(correctPassword)); 
+
+        function hashCode(s) {
+            return s.split('').reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0); 
+        }
+
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            const hashedInput = hashCode(password);
+            const hashedCorrect = hashCode(correctPassword);
+            
+            if (hashedInput === hashedCorrect) {
+                document.getElementById('passwordModal').style.display = 'none';
+                document.getElementById('protectedContent').style.display = 'block';
+            } else {
+                document.getElementById('passwordModal').style.display = 'none';
+                document.getElementById('wrongPassword').style.display = 'flex';
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
+            // Show password modal on load
+            document.getElementById('passwordModal').style.display = 'flex';
             const cards = document.querySelectorAll('.card');
             const overlay = document.getElementById('overlay');
             const darkModeToggle = document.getElementById('darkModeToggle');
